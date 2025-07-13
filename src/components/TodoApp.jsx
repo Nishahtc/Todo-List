@@ -8,7 +8,7 @@ export const TodoApp = () => {
 
   const [editId, setEditId] = useState(null);
   const [editText, setEditText] = useState("");
-
+  const [filterTodo , setFilterTodo] = useState("All")
   const handleAdd = () => {
     if (textAdd.trim()) {
       dispatch({ type: "ADD_TODO", payload: { text: textAdd } });
@@ -32,6 +32,13 @@ export const TodoApp = () => {
     setEditText("");
   };
 
+  const filterTodos = todo.filter((item)=>{
+    if(filterTodo === "PENDING") return !item.isComplete;
+    if(filterTodo === "COMPLETE") return item.isComplete;
+    return All
+    
+  })
+
   return (
     <Container className="mt-4">
       <Row className="justify-content-center">
@@ -39,8 +46,17 @@ export const TodoApp = () => {
           <div className="card shadow-sm rounded">
             <div className="card-body">
               <h2 className="text-center mb-4">Todo List</h2>
-
-              {/* Input + Add Button */}
+              <div>
+                <select 
+                className='mb-3'
+                value={filterTodo}
+                onChange={(e)=> setFilterTodo(e.target.value)}
+                >
+                  <option value="All">All</option>
+                  <option value="PENDING">pending</option>
+                  <option value="COMPLETE">complete</option>
+                </select>
+              </div>
               <div className="row g-2 mb-3">
                 <div className="col-12 col-sm-8">
                   <input
@@ -58,13 +74,13 @@ export const TodoApp = () => {
                 </div>
               </div>
 
-              {/* Todo List */}
+             
               <ul className="list-group">
-                {todo.map((item) => (
+                {filterTodos.map((item) => (
                   <li key={item.id} className="list-group-item">
                     <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
 
-                      {/* Checkbox + Text Input */}
+                   
                       <div className="d-flex align-items-center gap-2 flex-grow-1 w-100">
                         <input
                           type="checkbox"
