@@ -1,13 +1,13 @@
-
 import React, { useReducer, useState } from 'react';
 import { reducer } from '../store/Reducer';
+import { Container, Row, Col } from 'react-bootstrap';
 
 export const TodoApp = () => {
   const [todo, dispatch] = useReducer(reducer, []);
   const [textAdd, setTextAdd] = useState("");
 
-  const [editId, setEditId] = useState(null);     
-  const [editText, setEditText] = useState("");  
+  const [editId, setEditId] = useState(null);
+  const [editText, setEditText] = useState("");
 
   const handleAdd = () => {
     if (textAdd.trim()) {
@@ -25,80 +25,92 @@ export const TodoApp = () => {
   };
 
   const handleUpdate = (id, newText) => {
-    if (newText.trim === "") return;
+    if (newText.trim() === "") return;
 
-      dispatch({ type: "UPDATE", payload: { id, text: newText } });
-      setEditId(null);
-      setEditText("");
-    
+    dispatch({ type: "UPDATE", payload: { id, text: newText } });
+    setEditId(null);
+    setEditText("");
   };
 
   return (
-    <div className="card w-50 mx-auto mt-4">
-      <div className="card-body">
-        <h2 className='mb-3'>Todo List</h2>
+    <Container className="mt-4">
+      <Row className="justify-content-center">
+        <Col xs={12} md={8} lg={6}>
+          <div className="card shadow-sm rounded">
+            <div className="card-body">
+              <h2 className="text-center mb-4">Todo List</h2>
 
-       
-        <div className="d-flex gap-2 mb-3">
-          <input
-            type="text"
-            value={textAdd}
-            onChange={(e) => setTextAdd(e.target.value)}
-            placeholder="Enter todo"
-            className="form-control"
-          />
-          <button className="btn btn-success" onClick={handleAdd}>
-            AddTodo
-          </button>
-        </div>
-
-      
-        <ul className="list-group">
-          {todo.map((item) => (
-            <li key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
-              <div className="d-flex align-items-center gap-2 w-75">
-             
-                <input
-                  type="checkbox"
-                  checked={item.isComplete}
-                  onChange={() => handleToggle(item.id)}
-                />
-
-               
-                <input
-                  type="text"
-                  value={editId === item.id ? editText : item.text}
-                  onChange={(e) => setEditText(e.target.value)}
-                  disabled={editId !== item.id}
-                  className={`form-control ${item.isComplete ? 'text-decoration-line-through text-muted' : ''}`}
-                />
+              {/* Input + Add Button */}
+              <div className="row g-2 mb-3">
+                <div className="col-12 col-sm-8">
+                  <input
+                    type="text"
+                    value={textAdd}
+                    onChange={(e) => setTextAdd(e.target.value)}
+                    placeholder="Enter todo"
+                    className="form-control"
+                  />
+                </div>
+                <div className="col-12 col-sm-4">
+                  <button className="btn btn-success w-100" onClick={handleAdd}>
+                    Add Todo
+                  </button>
+                </div>
               </div>
 
-              <div className="d-flex gap-2">
-               
-             <button 
-              className='btn btn-warning btn-sm'
-             onClick={()=> editId === item.id
-                ? handleUpdate(item.id , editText)
-                : (setEditId(item.id),setEditText(item.text))
-              }
-              >
-                {editId === item.id ? "Save" : "Edit"}
+              {/* Todo List */}
+              <ul className="list-group">
+                {todo.map((item) => (
+                  <li key={item.id} className="list-group-item">
+                    <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
 
-             </button>
+                      {/* Checkbox + Text Input */}
+                      <div className="d-flex align-items-center gap-2 flex-grow-1 w-100">
+                        <input
+                          type="checkbox"
+                          checked={item.isComplete}
+                          onChange={() => handleToggle(item.id)}
+                        />
+                        <input
+                          type="text"
+                          value={editId === item.id ? editText : item.text}
+                          onChange={(e) => setEditText(e.target.value)}
+                          disabled={editId !== item.id}
+                          className={`form-control ${item.isComplete ? 'text-decoration-line-through text-muted' : ''}`}
+                        />
+                      </div>
+                      <div className="row g-2 mt-2 mt-md-0 w-100">
+                        <div className="col-6">
+                          <button
+                            className="btn btn-warning btn-sm w-100"
+                            onClick={() =>
+                              editId === item.id
+                                ? handleUpdate(item.id, editText)
+                                : (setEditId(item.id), setEditText(item.text))
+                            }
+                          >
+                            {editId === item.id ? "Save" : "Edit"}
+                          </button>
+                        </div>
+                        <div className="col-6">
+                          <button
+                            className="btn btn-danger btn-sm w-100"
+                            onClick={() => handleRemove(item.id)}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
 
-                
-                <button
-                  className="btn btn-danger btn-sm"
-                  onClick={() => handleRemove(item.id)}
-                >
-                  Remove
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+            </div>
+          </div>
+        </Col>
+      </Row>
+    </Container>
   );
 };
+
